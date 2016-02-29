@@ -4,7 +4,47 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="VenueLoginModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="VenueLoginModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Artist">
+          <Key>
+            <PropertyRef Name="ArtistKey" />
+          </Key>
+          <Property Name="ArtistKey" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ArtistName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ArtistEmail" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ArtistWebPage" Type="nvarchar" MaxLength="255" />
+          <Property Name="ArtistDateEntered" Type="datetime" />
+        </EntityType>
+        <EntityType Name="LoginHistory">
+          <Key>
+            <PropertyRef Name="LoginHistorykey" />
+          </Key>
+          <Property Name="LoginHistorykey" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="LoginHistoryDateTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Show">
+          <Key>
+            <PropertyRef Name="ShowKey" />
+          </Key>
+          <Property Name="ShowKey" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShowName" Type="nvarchar" MaxLength="255" />
+          <Property Name="VenueKey" Type="int" />
+          <Property Name="ShowDate" Type="date" Nullable="false" />
+          <Property Name="ShowTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="ShowTicketInfo" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ShowDateEntered" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ShowDetail">
+          <Key>
+            <PropertyRef Name="ShowDetailKey" />
+          </Key>
+          <Property Name="ShowDetailKey" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShowKey" Type="int" />
+          <Property Name="ArtistKey" Type="int" />
+          <Property Name="ShowDetailArtistStartTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="ShowDetailAdditional" Type="nvarchar" MaxLength="255" />
+        </EntityType>
         <EntityType Name="Venue">
           <Key>
             <PropertyRef Name="VenueKey" />
@@ -33,6 +73,42 @@
           <Property Name="VenueLoginHashed" Type="varbinary" MaxLength="500" />
           <Property Name="VenueLoginDateAdded" Type="datetime" />
         </EntityType>
+        <Association Name="FK__Show__VenueKey__2F10007B">
+          <End Role="Venue" Type="Self.Venue" Multiplicity="0..1" />
+          <End Role="Show" Type="Self.Show" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Venue">
+              <PropertyRef Name="VenueKey" />
+            </Principal>
+            <Dependent Role="Show">
+              <PropertyRef Name="VenueKey" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ShowDetai__Artis__300424B4">
+          <End Role="Artist" Type="Self.Artist" Multiplicity="0..1" />
+          <End Role="ShowDetail" Type="Self.ShowDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Artist">
+              <PropertyRef Name="ArtistKey" />
+            </Principal>
+            <Dependent Role="ShowDetail">
+              <PropertyRef Name="ArtistKey" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ShowDetai__ShowK__30F848ED">
+          <End Role="Show" Type="Self.Show" Multiplicity="0..1" />
+          <End Role="ShowDetail" Type="Self.ShowDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Show">
+              <PropertyRef Name="ShowKey" />
+            </Principal>
+            <Dependent Role="ShowDetail">
+              <PropertyRef Name="ShowKey" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__VenueLogi__Venue__31EC6D26">
           <End Role="Venue" Type="Self.Venue" Multiplicity="0..1" />
           <End Role="VenueLogin" Type="Self.VenueLogin" Multiplicity="*" />
@@ -63,15 +139,30 @@
           <Parameter Name="password" Type="nvarchar" Mode="In" />
         </Function>
         <EntityContainer Name="VenueLoginModelStoreContainer">
+          <EntitySet Name="Artist" EntityType="Self.Artist" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LoginHistory" EntityType="Self.LoginHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Show" EntityType="Self.Show" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShowDetail" EntityType="Self.ShowDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Venue" EntityType="Self.Venue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VenueLogin" EntityType="Self.VenueLogin" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Show__VenueKey__2F10007B" Association="Self.FK__Show__VenueKey__2F10007B">
+            <End Role="Venue" EntitySet="Venue" />
+            <End Role="Show" EntitySet="Show" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ShowDetai__Artis__300424B4" Association="Self.FK__ShowDetai__Artis__300424B4">
+            <End Role="Artist" EntitySet="Artist" />
+            <End Role="ShowDetail" EntitySet="ShowDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ShowDetai__ShowK__30F848ED" Association="Self.FK__ShowDetai__ShowK__30F848ED">
+            <End Role="Show" EntitySet="Show" />
+            <End Role="ShowDetail" EntitySet="ShowDetail" />
+          </AssociationSet>
           <AssociationSet Name="FK__VenueLogi__Venue__31EC6D26" Association="Self.FK__VenueLogi__Venue__31EC6D26">
             <End Role="Venue" EntitySet="Venue" />
             <End Role="VenueLogin" EntitySet="VenueLogin" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="VenueLoginModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -91,6 +182,7 @@
           <Property Name="VenueAgeRestriction" Type="Int32" />
           <Property Name="VenueDateAdded" Type="DateTime" Precision="3" />
           <NavigationProperty Name="VenueLogins" Relationship="Self.FK__VenueLogi__Venue__31EC6D26" FromRole="Venue" ToRole="VenueLogin" />
+          <NavigationProperty Name="Shows" Relationship="VenueLoginModel.FK__Show__VenueKey__2F10007B" FromRole="Venue" ToRole="Show" />
         </EntityType>
         <EntityType Name="VenueLogin">
           <Key>
@@ -141,7 +233,104 @@
             <Parameter Name="username" Mode="In" Type="String" />
             <Parameter Name="password" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="Artists" EntityType="VenueLoginModel.Artist" />
+          <EntitySet Name="LoginHistories" EntityType="VenueLoginModel.LoginHistory" />
+          <EntitySet Name="Shows" EntityType="VenueLoginModel.Show" />
+          <EntitySet Name="ShowDetails" EntityType="VenueLoginModel.ShowDetail" />
+          <AssociationSet Name="FK__ShowDetai__Artis__300424B4" Association="VenueLoginModel.FK__ShowDetai__Artis__300424B4">
+            <End Role="Artist" EntitySet="Artists" />
+            <End Role="ShowDetail" EntitySet="ShowDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Show__VenueKey__2F10007B" Association="VenueLoginModel.FK__Show__VenueKey__2F10007B">
+            <End Role="Venue" EntitySet="Venues" />
+            <End Role="Show" EntitySet="Shows" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ShowDetai__ShowK__30F848ED" Association="VenueLoginModel.FK__ShowDetai__ShowK__30F848ED">
+            <End Role="Show" EntitySet="Shows" />
+            <End Role="ShowDetail" EntitySet="ShowDetails" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Artist">
+          <Key>
+            <PropertyRef Name="ArtistKey" />
+          </Key>
+          <Property Name="ArtistKey" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ArtistName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ArtistEmail" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ArtistWebPage" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ArtistDateEntered" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ShowDetails" Relationship="VenueLoginModel.FK__ShowDetai__Artis__300424B4" FromRole="Artist" ToRole="ShowDetail" />
+        </EntityType>
+        <EntityType Name="LoginHistory">
+          <Key>
+            <PropertyRef Name="LoginHistorykey" />
+          </Key>
+          <Property Name="LoginHistorykey" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LoginHistoryDateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Show">
+          <Key>
+            <PropertyRef Name="ShowKey" />
+          </Key>
+          <Property Name="ShowKey" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShowName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="VenueKey" Type="Int32" />
+          <Property Name="ShowDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ShowTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="ShowTicketInfo" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ShowDateEntered" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Venue" Relationship="VenueLoginModel.FK__Show__VenueKey__2F10007B" FromRole="Show" ToRole="Venue" />
+          <NavigationProperty Name="ShowDetails" Relationship="VenueLoginModel.FK__ShowDetai__ShowK__30F848ED" FromRole="Show" ToRole="ShowDetail" />
+        </EntityType>
+        <EntityType Name="ShowDetail">
+          <Key>
+            <PropertyRef Name="ShowDetailKey" />
+          </Key>
+          <Property Name="ShowDetailKey" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShowKey" Type="Int32" />
+          <Property Name="ArtistKey" Type="Int32" />
+          <Property Name="ShowDetailArtistStartTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="ShowDetailAdditional" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Artist" Relationship="VenueLoginModel.FK__ShowDetai__Artis__300424B4" FromRole="ShowDetail" ToRole="Artist" />
+          <NavigationProperty Name="Show" Relationship="VenueLoginModel.FK__ShowDetai__ShowK__30F848ED" FromRole="ShowDetail" ToRole="Show" />
+        </EntityType>
+        <Association Name="FK__ShowDetai__Artis__300424B4">
+          <End Type="VenueLoginModel.Artist" Role="Artist" Multiplicity="0..1" />
+          <End Type="VenueLoginModel.ShowDetail" Role="ShowDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Artist">
+              <PropertyRef Name="ArtistKey" />
+            </Principal>
+            <Dependent Role="ShowDetail">
+              <PropertyRef Name="ArtistKey" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Show__VenueKey__2F10007B">
+          <End Type="VenueLoginModel.Venue" Role="Venue" Multiplicity="0..1" />
+          <End Type="VenueLoginModel.Show" Role="Show" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Venue">
+              <PropertyRef Name="VenueKey" />
+            </Principal>
+            <Dependent Role="Show">
+              <PropertyRef Name="VenueKey" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ShowDetai__ShowK__30F848ED">
+          <End Type="VenueLoginModel.Show" Role="Show" Multiplicity="0..1" />
+          <End Type="VenueLoginModel.ShowDetail" Role="ShowDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Show">
+              <PropertyRef Name="ShowKey" />
+            </Principal>
+            <Dependent Role="ShowDetail">
+              <PropertyRef Name="ShowKey" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -180,6 +369,50 @@
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="usp_RegisterVenue" FunctionName="VenueLoginModel.Store.usp_RegisterVenue" />
           <FunctionImportMapping FunctionImportName="usp_venueLogin" FunctionName="VenueLoginModel.Store.usp_venueLogin" />
+          <EntitySetMapping Name="Artists">
+            <EntityTypeMapping TypeName="VenueLoginModel.Artist">
+              <MappingFragment StoreEntitySet="Artist">
+                <ScalarProperty Name="ArtistDateEntered" ColumnName="ArtistDateEntered" />
+                <ScalarProperty Name="ArtistWebPage" ColumnName="ArtistWebPage" />
+                <ScalarProperty Name="ArtistEmail" ColumnName="ArtistEmail" />
+                <ScalarProperty Name="ArtistName" ColumnName="ArtistName" />
+                <ScalarProperty Name="ArtistKey" ColumnName="ArtistKey" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LoginHistories">
+            <EntityTypeMapping TypeName="VenueLoginModel.LoginHistory">
+              <MappingFragment StoreEntitySet="LoginHistory">
+                <ScalarProperty Name="LoginHistoryDateTime" ColumnName="LoginHistoryDateTime" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="LoginHistorykey" ColumnName="LoginHistorykey" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Shows">
+            <EntityTypeMapping TypeName="VenueLoginModel.Show">
+              <MappingFragment StoreEntitySet="Show">
+                <ScalarProperty Name="ShowDateEntered" ColumnName="ShowDateEntered" />
+                <ScalarProperty Name="ShowTicketInfo" ColumnName="ShowTicketInfo" />
+                <ScalarProperty Name="ShowTime" ColumnName="ShowTime" />
+                <ScalarProperty Name="ShowDate" ColumnName="ShowDate" />
+                <ScalarProperty Name="VenueKey" ColumnName="VenueKey" />
+                <ScalarProperty Name="ShowName" ColumnName="ShowName" />
+                <ScalarProperty Name="ShowKey" ColumnName="ShowKey" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShowDetails">
+            <EntityTypeMapping TypeName="VenueLoginModel.ShowDetail">
+              <MappingFragment StoreEntitySet="ShowDetail">
+                <ScalarProperty Name="ShowDetailAdditional" ColumnName="ShowDetailAdditional" />
+                <ScalarProperty Name="ShowDetailArtistStartTime" ColumnName="ShowDetailArtistStartTime" />
+                <ScalarProperty Name="ArtistKey" ColumnName="ArtistKey" />
+                <ScalarProperty Name="ShowKey" ColumnName="ShowKey" />
+                <ScalarProperty Name="ShowDetailKey" ColumnName="ShowDetailKey" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

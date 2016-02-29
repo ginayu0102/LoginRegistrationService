@@ -8,6 +8,13 @@
         <EntityTypeShape EntityType="VenueLoginModel.Venue" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="VenueLoginModel.VenueLogin" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
         <AssociationConnector Association="VenueLoginModel.FK__VenueLogi__Venue__31EC6D26" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="VenueLoginModel.Artist" Width="1.5" PointX="3" PointY="9.625" />
+        <EntityTypeShape EntityType="VenueLoginModel.LoginHistory" Width="1.5" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="VenueLoginModel.Show" Width="1.5" PointX="3" PointY="5.375" />
+        <EntityTypeShape EntityType="VenueLoginModel.ShowDetail" Width="1.5" PointX="5.25" PointY="5.625" />
+        <AssociationConnector Association="VenueLoginModel.FK__ShowDetai__Artis__300424B4" />
+        <AssociationConnector Association="VenueLoginModel.FK__Show__VenueKey__2F10007B" />
+        <AssociationConnector Association="VenueLoginModel.FK__ShowDetai__ShowK__30F848ED" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

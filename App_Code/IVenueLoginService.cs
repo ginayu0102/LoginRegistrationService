@@ -14,6 +14,17 @@ public interface IVenueLoginService
 
     [OperationContract]
     int VenueRegistration(VenueLite v);
+
+    [OperationContract]
+    int AddArtist(ArtistLite al);
+
+    [OperationContract]
+    int AddShow(ShowLite sl);
+
+    [OperationContract]
+    int AddShowDetail(ShowDetailLite sdl);
+
+
 }
 
 public class VenueLite
@@ -52,5 +63,61 @@ public class VenueLite
     public string Password { set; get; }
 
 
+
+}
+
+[DataContract]
+public class ShowLite
+{
+    [DataMember]
+    public int VenueKey { set; get; }
+    
+    [DataMember]
+    public string ShowName{set; get;}
+
+    [DataMember]
+    public string ShowDate{set; get;}
+
+    
+    [DataMember]
+    public string ShowTime { set; get; }
+
+    [DataMember]
+    public string ShowTicket { set; get; }
+
+
+}
+
+[DataContract]
+
+public class ArtistLite
+{
+    [DataMember]
+    public string ArtistName { set; get; }
+
+   
+    [DataMember]
+    public string ArtistEmail { set; get; }
+
+    [DataMember]
+    public string WebPage { set; get; }
+
+
+}
+
+[DataContract]
+public class ShowDetailLite
+{
+    [DataMember]
+    public string ArtistName { set; get; }
+
+    [DataMember]
+    public string ShowName { set; get; }
+
+    [DataMember]
+    public string ArtistStartTime { set; get; }
+
+    [DataMember]
+    public string Note { set; get; }
 
 }

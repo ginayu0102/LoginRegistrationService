@@ -36,4 +36,109 @@ public class VenueLoginService : IVenueLoginService
         int result = db.usp_RegisterVenue(v.VenueName, v.VenueAddress, v.VenueCity, v.VenueState, v.VenueZipCode, v.VenuePhone, v.Email, v.VenueWebpage, v.VenueAgeRestriction, v.UserName, v.Password);
         return result;
     }
+
+    //Add shows and add artists assignment
+    public int AddArtist(ArtistLite al)
+    {
+        int result = 1;
+        Artist a = new Artist();
+        a.ArtistName = al.ArtistName;
+        a.ArtistEmail = al.ArtistEmail;
+        a.ArtistWebPage = al.WebPage;
+        a.ArtistDateEntered = DateTime.Now;
+        try
+        {
+            db.Artists.Add(a);
+            db.SaveChanges();
+        }
+        
+        catch(Exception ex)
+        {
+        result=0;
+        throw ex;
+        }
+
+        return result;
+    }
+
+    public int AddShow(ShowLite sl)
+    {
+        
+        int result = 1;
+        Show s = new Show();
+        s.VenueKey = sl.VenueKey;
+        s.ShowName = sl.ShowName;
+        s.ShowDate = DateTime.Parse(sl.ShowDate);
+        s.ShowTime = TimeSpan.Parse(sl.ShowTime);
+        s.ShowTicketInfo = sl.ShowTicket;
+        s.ShowDateEntered = DateTime.Now;
+
+        try
+        {
+            db.Shows.Add(s);
+            db.SaveChanges();
+        }
+        catch(Exception ex) 
+        {
+            result = 0;
+            throw ex;
+        }
+
+
+        return result;
+    }
+
+
+    public int AddShowDetail(ShowDetailLite sdl)
+    {
+
+
+
+        int result = 1;
+        ShowDetail sd = new ShowDetail();
+
+        var key = from k in db.Artists
+                  where k.ArtistName.Equals(sdl.ArtistName)
+                  select new { k.ArtistKey };
+
+        int AKey = 0;
+        foreach (var k in key)
+        {
+            AKey = (int)k.ArtistKey;
+        }
+
+        var kkey = from kk in db.Shows
+                   where kk.ShowName.Equals(sdl.ShowName)
+                   select new { kk.ShowKey };
+
+        int SKey = 0;
+        foreach (var kk in kkey)
+        {
+            SKey = (int)kk.ShowKey;
+        }
+
+        sd.ArtistKey = AKey;
+        sd.ShowDetailArtistStartTime = TimeSpan.Parse(sdl.ArtistStartTime);
+        sd.ShowDetailAdditional = sdl.Note;
+        sd.ShowKey = SKey;
+
+
+
+
+        try
+        {
+            db.ShowDetails.Add(sd);
+            db.SaveChanges();
+
+        }
+
+        catch (Exception ex)
+        {
+            result = 0;
+            throw ex;
+        }
+
+        return result;
+
+    }
 }
