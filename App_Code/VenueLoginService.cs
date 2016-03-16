@@ -10,6 +10,8 @@ public class VenueLoginService : IVenueLoginService
 {
     ShowTrackerEntities db = new ShowTrackerEntities();
 
+
+    //-------------Venue Part------------------------------
     public int VenueLogin(string username, string password)
     {
         int result = db.usp_venueLogin(username, password);
@@ -37,7 +39,66 @@ public class VenueLoginService : IVenueLoginService
         return result;
     }
 
-    //Add shows and add artists assignment
+
+
+    //-----------Fan Part------------------------------------
+    public int FanLogin(string fusername, string fpassword)
+    {
+        int result = db.usp_FanLogin(fusername, fpassword);
+        if (result != -1)
+        {
+            var key = from f in db.FanLogins
+                      where f.FanLoginUserName.Equals(fusername)
+                      select new { f.FanKey };
+            foreach (var f in key)
+            {
+                result = (int)f.FanKey;
+            }
+
+        }
+        return result;
+    }
+
+    public int FanRegistration(FanLite fl)
+    {
+        int result = db.usp_RegisterFan(fl.FName, fl.FEmail, fl.FUsername, fl.FPassword);
+
+        return result;
+    }
+
+    public int AddFanArtist(int fanKey, string artistName)
+    {
+        /*********************************
+         * This method will add an artist to the artistFan
+         * table. First we have to find the fan
+         * and then the particular artist
+         * Then we add the artist to the Fan's list
+         * of artists to follow
+         * **********************************/
+        int result = 1;
+
+        //get the fan. the key can come from their login
+        Fan myFan = (from f in db.Fans
+                     where f.FanKey == fanKey
+                     select f).First();
+
+        //get the artist by name
+        Artist myArtist = (from a in db.Artists
+                           where a.ArtistName.Equals(artistName)
+                           select a).First();
+
+        //add the artist to the fan's collection of artists
+        myFan.Artists.Add(myArtist);
+
+        //save the changes
+        db.SaveChanges();
+
+        return result;
+    }
+
+
+
+    //-----Add shows and add artists assignment---------
     public int AddArtist(ArtistLite al)
     {
         int result = 1;
@@ -60,6 +121,7 @@ public class VenueLoginService : IVenueLoginService
 
         return result;
     }
+
 
     public int AddShow(ShowLite sl)
     {

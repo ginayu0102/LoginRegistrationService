@@ -24,7 +24,14 @@ public interface IVenueLoginService
     [OperationContract]
     int AddShowDetail(ShowDetailLite sdl);
 
+    [OperationContract]
+    int FanLogin(string fusername, string fpassword);
 
+    [OperationContract]
+    int FanRegistration(FanLite fl);
+
+    [OperationContract]
+    int AddFanArtist(int fanKey, string artistName);
 }
 
 public class VenueLite
@@ -121,3 +128,17 @@ public class ShowDetailLite
     public string Note { set; get; }
 
 }
+
+[DataContract]
+public class FanLite
+{
+    [DataMember]
+    public string FName { set; get; }
+    [DataMember]
+    public string FEmail { set; get; }
+    [DataMember]
+    public string FUsername { set; get; }
+    [DataMember]
+    public string FPassword { set; get; }
+}
+

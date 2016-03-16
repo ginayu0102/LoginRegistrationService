@@ -15,6 +15,10 @@
         <AssociationConnector Association="VenueLoginModel.FK__ShowDetai__Artis__300424B4" />
         <AssociationConnector Association="VenueLoginModel.FK__Show__VenueKey__2F10007B" />
         <AssociationConnector Association="VenueLoginModel.FK__ShowDetai__ShowK__30F848ED" />
+        <EntityTypeShape EntityType="VenueLoginModel.Fan" Width="1.5" PointX="5.25" PointY="9.75" />
+        <EntityTypeShape EntityType="VenueLoginModel.FanLogin" Width="1.5" PointX="7.5" PointY="9.5" />
+        <AssociationConnector Association="VenueLoginModel.FK__FanLogin__FanKey__2E1BDC42" />
+        <AssociationConnector Association="VenueLoginModel.FanArtist" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

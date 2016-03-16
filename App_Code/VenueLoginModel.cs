@@ -15,6 +15,7 @@ public partial class Artist
     public Artist()
     {
         this.ShowDetails = new HashSet<ShowDetail>();
+        this.Fans = new HashSet<Fan>();
     }
 
     public int ArtistKey { get; set; }
@@ -24,6 +25,37 @@ public partial class Artist
     public Nullable<System.DateTime> ArtistDateEntered { get; set; }
 
     public virtual ICollection<ShowDetail> ShowDetails { get; set; }
+    public virtual ICollection<Fan> Fans { get; set; }
+}
+
+public partial class Fan
+{
+    public Fan()
+    {
+        this.FanLogins = new HashSet<FanLogin>();
+        this.Artists = new HashSet<Artist>();
+    }
+
+    public int FanKey { get; set; }
+    public string FanName { get; set; }
+    public string FanEmail { get; set; }
+    public Nullable<System.DateTime> FanDateEntered { get; set; }
+
+    public virtual ICollection<FanLogin> FanLogins { get; set; }
+    public virtual ICollection<Artist> Artists { get; set; }
+}
+
+public partial class FanLogin
+{
+    public int FanLoginKey { get; set; }
+    public Nullable<int> FanKey { get; set; }
+    public string FanLoginUserName { get; set; }
+    public string FanLoginPasswordPlain { get; set; }
+    public int FanLoginRandom { get; set; }
+    public byte[] FanLoginHashed { get; set; }
+    public Nullable<System.DateTime> FanLoginDateAdded { get; set; }
+
+    public virtual Fan Fan { get; set; }
 }
 
 public partial class LoginHistory
